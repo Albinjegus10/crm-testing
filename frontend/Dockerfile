@@ -12,4 +12,4 @@ RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD serve -s build -p $PORT
+CMD ["sh", "-c", "serve -s build -l $PORT"]
