@@ -10,4 +10,7 @@ RUN npm run build
 
 RUN npm install -g serve
 
-CMD npx serve -s build -p $PORT
+COPY start.sh .
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
