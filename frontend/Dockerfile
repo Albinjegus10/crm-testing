@@ -10,4 +10,4 @@ RUN npm run build
 
 RUN npm install -g serve
 
-CMD npx serve -s build -l $PORT
+CMD npx serve -s build -p $PORT
