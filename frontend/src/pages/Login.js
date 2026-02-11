@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { auth } from '../services/api';
 import { useAuth } from '../services/AuthContext';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const Login = () => {
   const [loading, setLoading] = useState(false);

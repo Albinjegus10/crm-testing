@@ -26,7 +26,7 @@ const Clients = () => {
 
   useEffect(() => {
     fetchClients();
-  }, [search]);
+  }, [search, fetchClients]);
 
   const handleSubmit = async (values) => {
     try {
