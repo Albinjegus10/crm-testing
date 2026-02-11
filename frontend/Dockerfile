@@ -10,6 +10,4 @@ RUN npm run build
 
 RUN npm install -g serve
 
-EXPOSE 3001
-
-CMD ["sh", "-c", "serve -s build -l $PORT"]
+CMD npx serve -s build -l $PORT
