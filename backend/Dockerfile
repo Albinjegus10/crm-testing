@@ -15,4 +15,4 @@ COPY . .
 
 RUN python manage.py collectstatic --noinput
 
-CMD python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+CMD python manage.py migrate && python create_superuser.py && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
