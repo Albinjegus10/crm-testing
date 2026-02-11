@@ -123,7 +123,7 @@ const Home = () => {
       </Content>
 
       <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '24px 50px' }}>
-        <div>Royal Accounts © 2026 | Professional Accounting Services</div>
+        <div>Royal Accounts © 2026 | Professional Accounting Services.</div>
         <Link to="/login" style={{ color: '#888', fontSize: 12, marginTop: 8, display: 'inline-block' }}>Staff Login</Link>
       </Footer>
     </Layout>
