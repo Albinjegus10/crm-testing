@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Modal, Form, Input, DatePicker, Upload, message, Space } from 'antd';
 import { PlusOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { clients } from '../services/api';
@@ -12,7 +12,7 @@ const Clients = () => {
   const [search, setSearch] = useState('');
   const [form] = Form.useForm();
 
-  const fetchClients = async () => {
+  const fetchClients = useCallback(async () => {
     setLoading(true);
     try {
       const response = await clients.getAll({ search });
@@ -22,11 +22,11 @@ const Clients = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
 
   useEffect(() => {
     fetchClients();
-  }, [search, fetchClients]);
+  }, [fetchClients]);
 
   const handleSubmit = async (values) => {
     try {
