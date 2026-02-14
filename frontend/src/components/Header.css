@@ -1,0 +1,129 @@
+.custom-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  padding: 0 48px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky !important;
+  top: 0;
+  z-index: 999;
+  transition: all 0.3s ease;
+  height: 70px;
+  line-height: 70px;
+}
+
+.custom-header.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: 64px;
+  line-height: 64px;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e40af;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  color: #1e40af;
+}
+
+.logo-icon {
+  font-size: 28px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.logo-text {
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.desktop-menu .ant-menu-item,
+.desktop-menu .ant-menu-submenu {
+  font-weight: 500;
+  font-size: 15px;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.3s ease;
+}
+
+.desktop-menu .ant-menu-item:hover,
+.desktop-menu .ant-menu-submenu:hover {
+  color: #1e40af !important;
+  border-bottom-color: #1e40af !important;
+}
+
+.desktop-menu .ant-menu-item-selected {
+  color: #1e40af !important;
+  border-bottom-color: #1e40af !important;
+}
+
+.login-btn {
+  height: 40px;
+  padding: 0 24px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+.mobile-menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .custom-header {
+    padding: 0 16px !important;
+  }
+  
+  .desktop-menu {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+  
+  .logo {
+    font-size: 20px;
+  }
+  
+  .logo-icon {
+    font-size: 24px;
+  }
+}

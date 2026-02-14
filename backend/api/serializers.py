@@ -1,11 +1,26 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Lead, Client, Attendance, Notification, Task
+from .models import Lead, Client, Attendance, Notification, Task, UserProfile
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'is_active', 'role', 'created_by']
+    
+    def get_role(self, obj):
+        if obj.is_superuser:
+            return 'admin'
+        if hasattr(obj, 'profile'):
+            return obj.profile.role
+        return 'staff'
+    
+    def get_created_by(self, obj):
+        if hasattr(obj, 'profile') and obj.profile.created_by:
+            return {'id': obj.profile.created_by.id, 'username': obj.profile.created_by.username}
+        return None
 
 class LeadSerializer(serializers.ModelSerializer):
     class Meta:

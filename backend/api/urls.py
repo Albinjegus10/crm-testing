@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     login, signup, forgot_password, submit_lead, get_staff_users,
-    LeadViewSet, ClientViewSet, AttendanceViewSet, NotificationViewSet, TaskViewSet
+    LeadViewSet, ClientViewSet, AttendanceViewSet, NotificationViewSet, TaskViewSet, UserViewSet
 )
 
 router = DefaultRouter()
@@ -11,6 +11,7 @@ router.register('clients', ClientViewSet)
 router.register('attendance', AttendanceViewSet)
 router.register('notifications', NotificationViewSet)
 router.register('tasks', TaskViewSet)
+router.register('users', UserViewSet)
 
 urlpatterns = [
     path('login/', login),

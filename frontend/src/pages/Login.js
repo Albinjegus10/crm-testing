@@ -14,6 +14,10 @@ const Login = () => {
   const onSubmit = async (values) => {
     setLoading(true);
     try {
+      // Clear any existing tokens before login
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
       const response = await auth.login(values);
       login(response.data.access, response.data.user);
       message.success('Login successful');
@@ -40,9 +44,7 @@ const Login = () => {
           </Button>
         </Form>
         <div style={{ marginTop: 16, textAlign: 'center' }}>
-          <Link to="/forgot-password"><Text type="secondary">Forgot Password?</Text></Link>
-          <br />
-          <Link to="/signup" style={{ marginTop: 8, display: 'inline-block' }}><Text type="secondary">Create Account</Text></Link>
+          <Link to="/"><Text type="secondary">Back to Home</Text></Link>
         </div>
       </Card>
     </div>

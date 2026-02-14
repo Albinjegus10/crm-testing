@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime, timedelta
 import pandas as pd
-from .models import Lead, Client, Attendance, Notification, Task
+from .models import Lead, Client, Attendance, Notification, Task, UserProfile
 from .serializers import (
     UserSerializer, LeadSerializer, ClientSerializer,
     AttendanceSerializer, NotificationSerializer, TaskSerializer
@@ -247,3 +247,97 @@ class TaskViewSet(viewsets.ModelViewSet):
 def get_staff_users(request):
     users = User.objects.filter(is_active=True)
     return Response(UserSerializer(users, many=True).data)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return User.objects.all()
+        elif hasattr(user, 'profile') and user.profile.role == 'hr':
+            return User.objects.filter(Q(profile__role='staff') | Q(id=user.id))
+        return User.objects.filter(id=user.id)
+
+    def create(self, request):
+        user = request.user
+        role = request.data.get('role')
+        
+        # Permission check
+        if not user.is_superuser and not (hasattr(user, 'profile') and user.profile.role == 'hr'):
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        
+        if user.profile.role == 'hr' and role != 'staff':
+            return Response({'error': 'HR can only create staff users'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Create user
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        new_user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            is_staff=True
+        )
+        
+        # Create profile
+        UserProfile.objects.create(
+            user=new_user,
+            role=role,
+            created_by=user
+        )
+        
+        return Response(UserSerializer(new_user).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk=None):
+        user = request.user
+        target_user = self.get_object()
+        
+        # Permission check
+        if not user.is_superuser:
+            if not (hasattr(user, 'profile') and user.profile.role == 'hr'):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+            if hasattr(target_user, 'profile') and target_user.profile.role != 'staff':
+                return Response({'error': 'HR can only edit staff users'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Update user
+        target_user.email = request.data.get('email', target_user.email)
+        target_user.first_name = request.data.get('first_name', target_user.first_name)
+        target_user.last_name = request.data.get('last_name', target_user.last_name)
+        target_user.is_active = request.data.get('is_active', target_user.is_active)
+        target_user.save()
+        
+        # Update profile
+        if hasattr(target_user, 'profile'):
+            target_user.profile.role = request.data.get('role', target_user.profile.role)
+            target_user.profile.save()
+        
+        return Response(UserSerializer(target_user).data)
+
+    def destroy(self, request, pk=None):
+        user = request.user
+        target_user = self.get_object()
+        
+        if target_user.is_superuser:
+            return Response({'error': 'Cannot delete admin user'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Permission check
+        if not user.is_superuser:
+            if not (hasattr(user, 'profile') and user.profile.role == 'hr'):
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+            if hasattr(target_user, 'profile') and target_user.profile.role != 'staff':
+                return Response({'error': 'HR can only delete staff users'}, status=status.HTTP_403_FORBIDDEN)
+        
+        target_user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
